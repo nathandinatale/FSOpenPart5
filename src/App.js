@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 import Blog from "./components/Blog";
 import LoginForm from "./components/LoginForm";
-import NewBlogForm from "./components/NewBlogForm";
+import BlogForm from "./components/BlogForm";
 import LoggedIn from "./components/LoggedIn";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
@@ -27,6 +27,14 @@ const App = () => {
     fetchData();
   }, []);
 
+  const handleLike = async (blog) => {
+    const likedBlog = await blogService.likeBlog(blog, user.token);
+    const newBlogs = blogs.map((blog) => {
+      return blog.id === likedBlog.id ? likedBlog : blog;
+    });
+    setBlogs(newBlogs);
+  };
+
   return (
     <div>
       <Notification message={notification.message} color={notification.color} />
@@ -40,13 +48,16 @@ const App = () => {
         />
       )}
       {user && (
-        <NewBlogForm
+        <BlogForm
           setNotification={setNotification}
           setBlogs={setBlogs}
           user={user}
         />
       )}
-      {blogs && blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+      {blogs &&
+        blogs.map((blog) => (
+          <Blog key={blog.id} blog={blog} handleLike={handleLike} />
+        ))}
     </div>
   );
 };
