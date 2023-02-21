@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const LoggedIn = ({ user, setUser, setBlogs }) => {
   const handleLogout = async (event) => {
     event.preventDefault();
@@ -15,6 +17,12 @@ const LoggedIn = ({ user, setUser, setBlogs }) => {
       </p>
     </div>
   );
+};
+
+LoggedIn.propTypes = {
+  user: PropTypes.object.isRequired,
+  setUser: PropTypes.func.isRequired,
+  setBlogs: PropTypes.func.isRequired,
 };
 
 export default LoggedIn;
