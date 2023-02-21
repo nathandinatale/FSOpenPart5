@@ -29,10 +29,25 @@ const App = () => {
 
   const handleLike = async (blog) => {
     const likedBlog = await blogService.likeBlog(blog, user.token);
-    const newBlogs = blogs.map((blog) => {
+    const updatedBlogs = blogs.map((blog) => {
       return blog.id === likedBlog.id ? likedBlog : blog;
     });
-    setBlogs(newBlogs);
+    setBlogs(updatedBlogs);
+  };
+
+  const handleRemoveBlog = async (removeBlog) => {
+    if (
+      window.confirm(`Remove blog ${removeBlog.title} by ${removeBlog.author}`)
+    ) {
+      await blogService.removeBlog(removeBlog.id, user.token);
+      const updatedBlogs = blogs.filter((blog) => blog.id !== removeBlog.id);
+      setBlogs(updatedBlogs);
+      setNotification({
+        color: "green",
+        message: `${removeBlog.title} by ${removeBlog.author} was successfuly deleted!`,
+      });
+      setTimeout(() => setNotification({ color: "", message: "" }), 5000);
+    }
   };
 
   return (
@@ -55,9 +70,17 @@ const App = () => {
         />
       )}
       {blogs &&
-        blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} handleLike={handleLike} />
-        ))}
+        blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={handleLike}
+              handleRemoveBlog={handleRemoveBlog}
+              username={user.username}
+            />
+          ))}
     </div>
   );
 };
