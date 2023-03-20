@@ -35,5 +35,9 @@ Cypress.Commands.add("createUser", (username, password, name) => {
 Cypress.Commands.add("login", (username, password) => {
   cy.get("#username").type(username);
   cy.get("#password").type(password);
-  cy.get("#login-button").click();
+  cy.get("#login-button")
+    .click()
+    .then((response) => {
+      localStorage.setItem("loggedBlogappUser", JSON.stringify(response.body));
+    });
 });
