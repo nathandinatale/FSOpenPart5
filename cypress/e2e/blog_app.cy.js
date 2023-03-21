@@ -1,7 +1,10 @@
+import blogs from "../support/blogs";
+
 describe("Blog app", function () {
   beforeEach(function () {
     // send a POST request to the endpoint that resets the testing database here
     cy.request("POST", "http://localhost:3000/api/testing/reset");
+    cy.clearAllLocalStorage();
     cy.visit("http://localhost:3000");
   });
 
@@ -52,6 +55,16 @@ describe("Blog app", function () {
       cy.get("form").submit();
 
       cy.contains("Will the Leafs beat the Lightning?");
+    });
+
+    it("A blog can be liked", function () {
+      cy.addBlogs(blogs);
+      cy.reload();
+
+      cy.contains("show").click();
+      cy.contains("like").click();
+
+      cy.contains("likes 1");
     });
   });
 });

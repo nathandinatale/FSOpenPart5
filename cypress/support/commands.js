@@ -35,9 +35,30 @@ Cypress.Commands.add("createUser", (username, password, name) => {
 Cypress.Commands.add("login", (username, password) => {
   cy.get("#username").type(username);
   cy.get("#password").type(password);
-  cy.get("#login-button")
-    .click()
-    .then((response) => {
-      localStorage.setItem("loggedBlogappUser", JSON.stringify(response.body));
+  cy.get("#login-button").click();
+
+  // Although the above will log the user in, using the request to obtain the token
+  // Had issues getting access to the local storage token when loggin in through UI
+  cy.request("POST", "http://localhost:3000/api/login", {
+    username,
+    password,
+  }).then(({ body }) => {
+    localStorage.setItem("loggedBlogappUser", JSON.stringify(body));
+  });
+});
+
+Cypress.Commands.add("addBlogs", (blogs) => {
+  blogs.forEach((blog) => {
+    console.log(localStorage.getItem("loggedBlogappUser"));
+    cy.request({
+      method: "POST",
+      url: "http://localhost:3000/api/blogs",
+      body: blog,
+      headers: {
+        Authorization: `Bearer ${
+          JSON.parse(localStorage.getItem("loggedBlogappUser")).token
+        }`,
+      },
     });
+  });
 });
