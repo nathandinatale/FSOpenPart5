@@ -43,6 +43,8 @@ describe("Blog app", function () {
         Cypress.env("user_fullname")
       );
       cy.login(Cypress.env("username"), Cypress.env("password"));
+      cy.addBlogs(blogs);
+      cy.reload();
     });
 
     it("A blog can be created", function () {
@@ -58,13 +60,21 @@ describe("Blog app", function () {
     });
 
     it("A blog can be liked", function () {
-      cy.addBlogs(blogs);
-      cy.reload();
-
       cy.contains("show").click();
       cy.contains("like").click();
 
       cy.contains("likes 1");
+    });
+
+    it("A user can delete a blog they created", function () {
+      cy.contains(blogs[0].title)
+        .then((element) => console.log(element.text()))
+        .contains("show")
+        .click();
+      cy.contains("hide").closest("div").contains("remove").click();
+
+      cy.contains("was successfuly deleted").wait(5000);
+      cy.contains(blogs[0].title).should("not.exist");
     });
   });
 });

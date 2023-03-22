@@ -25,6 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add("createUser", (username, password, name) => {
+  console.log("Username PW Name: ", username, password, name);
   cy.request("POST", "http://localhost:3000/api/users", {
     username,
     password,
@@ -49,7 +50,6 @@ Cypress.Commands.add("login", (username, password) => {
 
 Cypress.Commands.add("addBlogs", (blogs) => {
   blogs.forEach((blog) => {
-    console.log(localStorage.getItem("loggedBlogappUser"));
     cy.request({
       method: "POST",
       url: "http://localhost:3000/api/blogs",

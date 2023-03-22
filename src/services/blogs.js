@@ -37,7 +37,6 @@ const likeBlog = async (blog, token) => {
 
 const removeBlog = async (blogId, token) => {
   const response = await axios.delete(`${baseUrl}/${blogId}`, setAuth(token));
-  console.log(response);
   return response;
 };
 
