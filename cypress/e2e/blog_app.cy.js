@@ -76,5 +76,19 @@ describe("Blog app", function () {
       cy.contains("was successfuly deleted").wait(5000);
       cy.contains(blogs[0].title).should("not.exist");
     });
+
+    it("A user can't delete a blog they didn't create", function () {
+      cy.createUser(
+        Cypress.env("username2"),
+        Cypress.env("password2"),
+        Cypress.env("user_fullname2")
+      );
+      cy.contains("Logout").click();
+      cy.login(Cypress.env("username2"), Cypress.env("password2"));
+
+      cy.contains("show").click();
+      cy.contains("like");
+      cy.contains("remove").should("not.exist");
+    });
   });
 });
